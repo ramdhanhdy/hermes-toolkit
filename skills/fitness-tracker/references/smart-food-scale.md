@@ -1,6 +1,6 @@
 # Portable AI Food Scale Blueprint
 
-Captured 2026-05-04 from a user idea: build a portable digital food scale connected to AI calorie/macro logging.
+Captured from a user idea: build a portable digital food scale connected to AI calorie/macro logging.
 
 ## Core Principle
 

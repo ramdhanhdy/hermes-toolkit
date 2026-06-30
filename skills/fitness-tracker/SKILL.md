@@ -8,7 +8,7 @@ category: automation
 
 Personal calorie deficit tracking system for weight loss. Combines nutrition logging, gym workout data (via Lyfta API), and weekly weigh-ins into a SQLite-backed analytics pipeline.
 
-> Productivity tracking (focus blocks, projects) was split to the `productivity-tracker` skill on 2026-04-23. The dashboard still shows productivity data via SQLite `ATTACH DATABASE`.
+> Productivity tracking (focus blocks, projects) was split to the `productivity-tracker` skill . The dashboard still shows productivity data via SQLite `ATTACH DATABASE`.
 
 ## Setup / Dependencies
 
@@ -46,23 +46,28 @@ ln -sfn /actual/path/to/fitness-tracker ~/.hermes/skills/fitness-tracker
 
 ## User Profile
 
-- 33M, 159cm, ~83kg (update weight in data/profile.json as it changes)
-- BMR: 1,664 kcal | Sedentary base: 1,997 kcal
-- Gym: 5x/week strength training, ~420 kcal/session
-- Weigh-in: weekly at gym (no home scale)
-- Target: 0.5-0.8 kg/week loss (midpoint 650 kcal daily deficit)
-- Collagen target: 2.5g/day (Hilo Berryfit: 500mg, Hilo Active: 2,000mg)
+User stats are stored in `data/profile.json` (not committed - see `data/profile.example.json` for the template). The pipeline reads from this file for BMR, weight, activity level, and deficit targets.
+
+Key fields:
+- `age`, `sex`, `height_cm`, `weight_kg` - for BMR calculation (Mifflin-St Jeor)
+- `activity_level` - sedentary/moderate/active
+- `goal` - maintenance/cut/bulk
+- `weekly_deficit_target_kcal` - daily deficit midpoint
+- `gym_days_per_week` - training frequency
+- `rest_day` - which day is scheduled rest
 
 ## Daily Budget
 
-| Scenario  | Expenditure | Budget (expenditure - 650) |
-|-----------|-------------|---------------------------|
-| Gym day   | ~2,400 kcal | ~1,750 kcal               |
-| Rest day  | ~2,000 kcal | ~1,350 kcal               |
+The budget is calculated dynamically from the profile. Examples:
+
+| Scenario  | Expenditure | Budget (expenditure - deficit) |
+|-----------|-------------|-------------------------------|
+| Gym day   | ~2,400 kcal | ~1,750 kcal                   |
+| Rest day  | ~2,000 kcal | ~1,350 kcal                   |
 
 Budget is dynamic: if Lyfta data shows a different workout duration/volume, adjust gym calories accordingly. If user does cardio classes (FatBurn, HIIT, etc.) in addition to strength, add ~250-400 kcal to expenditure for that day.
 
-**⏰ Weekdays default to gym day - verify by end of day.** When logging meals on Mon-Fri, assume gym day budget (~1,767 kcal) by default. However, always sync Lyfta by evening (`lyfta_sync.py --days 1`) to verify. If Lyfta definitively shows no workout that day, switch budget to rest day (~1,347 kcal) and recalculate remaining. Do NOT silently flip the assumption without checking - the user corrected this on 2026-06-22 when a Monday was mislabeled as rest without verification. Sunday is always a scheduled rest day.
+**Weekdays default to gym day - verify by end of day.** When logging meals on Mon-Fri, assume gym day budget by default. However, always sync Lyfta by evening (`lyfta_sync.py --days 1`) to verify. If Lyfta definitively shows no workout that day, switch budget to rest day and recalculate remaining. Do NOT silently flip the assumption without checking. Sunday is always a scheduled rest day.
 
 ## Core Philosophy: Weekly Measurement, Daily Behavior
 
@@ -127,7 +132,7 @@ Use the `log_checkin.py` CLI for a single weigh-in. This writes to the SQLite `w
 
 ```bash
 cd ~/.hermes/skills/fitness-tracker
-python3 scripts/log_checkin.py 2026-04-28 81.8 --pre-workout --notes "felt light"
+python3 scripts/log_checkin.py 2026-01-15 75.0 --pre-workout --notes "felt light"
 ```
 
 For CSV uploads / historical weight exports, use `import_weight_csv.py` instead of searching unrelated app code. Accepted headers are flexible: `date`/`checkin_date` plus `weight_kg`/`weight`/`kg`; optional `waist_cm`, `weighin_time`, `pre_workout`, `clothing_notes`, `comment`/`notes`. If Telegram rejects `.csv`, upload `.xlsx` and use `import_weight_xlsx.py` (works for MovingLife exports).
@@ -158,7 +163,7 @@ python3 scripts/run_pipeline.py
 
 **Canonical path pitfall:** Some archived/curated installs may place the live skill under `~/.hermes/skills/.archive/.../fitness-tracker` while tracker scripts still hardcode `~/.hermes/skills/fitness-tracker/...` (`run_pipeline.py`, `etl_sync.py`, etc.). If meal logging fails with “can't open file ~/.hermes/skills/fitness-tracker/scripts/etl_sync.py” or the canonical directory is missing, restore the canonical path before rerunning:
 ```bash
-ln -sfn ~/.hermes/skills/.archive/umbrella-2026-04-30/fitness-tracker ~/.hermes/skills/fitness-tracker
+ln -sfn ~/.hermes/skills/.archive/umbrella-archive/fitness-tracker ~/.hermes/skills/fitness-tracker
 cd ~/.hermes/skills/fitness-tracker
 python3 scripts/run_pipeline.py
 ```
@@ -201,7 +206,7 @@ When the user asks **"what should I work on today at the gym"**, give a split re
 - Back/pull: row, pulldown, pull-up, lat-focused work
 - Shoulders/rear delts: shoulder press, lateral raise, face pull, rear delt fly
 
-**⏰ Analysis depth: use 4 weeks (30 days), not 5-7 days.** The user corrected a shallow 7-day analysis on 2026-06-22 - when asked "what should I work on today," they expected muscle frequency, progressive overload tracking, and volume trends across a full month, not just the last week. Default workflow: `lyfta_sync.py --days 30` (⚠️ follow with `--days 45 --limit 100` to restore the cache - see narrow-sync pitfall), then compute per-muscle weekly frequency, identify the highest-priority gap (days since last trained × frequency deficit), and pull progressive overload history for every exercise in the recommended muscle group.
+**⏰ Analysis depth: use 4 weeks (30 days), not 5-7 days.** Always use 4 weeks of data, not 5-7 days. When asked "what should I work on today," users expect muscle frequency, progressive overload tracking, and volume trends across a full month, not just the last week. Default workflow: `lyfta_sync.py --days 30` (⚠️ follow with `--days 45 --limit 100` to restore the cache - see narrow-sync pitfall), then compute per-muscle weekly frequency, identify the highest-priority gap (days since last trained × frequency deficit), and pull progressive overload history for every exercise in the recommended muscle group.
 
 Default heuristic: avoid repeating the most recent hard-trained muscle group; choose the largest undertrained area from the 4-week frequency table, then provide a concise exercise menu with sets/reps and progressive-overload targets (last session's top set → next weight bump). Include the ⚡BUMP signal (>8 reps on final working set → increase weight next session) and a secondary muscle group to pair. Also include a short nutrition note if same-day protein is low.
 
@@ -247,7 +252,7 @@ When the user asks for a program-level analysis (not a single-session breakdown)
 **Telegram long-form rendering:** Deep workout analyses often exceed 4,000 chars. Use collapsible `<details>` sections for full data tables (per-session volume, 6-week nutrition log) so the main message stays scannable. Use footnotes `[^1]` for methodology notes. Use task lists `- [ ]` for action items. Avoid `**bold**` inside pipe-delimited tables - Telegram renders it as literal asterisks. Keep tables to 4-5 columns max for mobile readability.
 
 1. **Pull exercise details** via `lyfta_sync.py` (not summary-only) to get sets/reps/weights
-2. **Gather context before judging the workout** - at minimum sync/review the last 7–30 days of Lyfta history, not only today's exercises. The user corrected an overly narrow evaluation on 2026-05-01: today's arm/triceps session was appropriate because shoulders/back were trained the day before. Do not criticize a missing muscle group until checking recent split coverage.
+2. **Gather context before judging the workout** - at minimum sync/review the last 7–30 days of Lyfta history, not only today's exercises. For example: an arm/triceps session is appropriate when shoulders/back were trained the day before. Do not criticize a missing muscle group until checking recent split coverage.
 3. **Identify top sets** per exercise (highest weight or estimated 1RM for working sets) and compare to prior occurrences of the same exercise when available.
 4. **Apply progressive overload rule:** >8 reps on last working set → increase weight next session. Flag exercises ready to progress, almost-ready holds, and baseline/new movements separately.
 5. **Track muscle group coverage** for the week (e.g., "Chest Apr 28, back/shoulders Apr 30, arms today") and make the next-split recommendation from the actual coverage gaps.
@@ -437,7 +442,7 @@ Always use USDA FoodData Central or FatSecret as primary sources. Cite which sou
 | Gepuk/empal daging sapi | 212 | 22.3g | 10.3g | 7.5g | FatSecret ID search |
 | Hilo Protein UHT Berryfit (190ml) | 120 | 12g | 2g | 13g | Label |
 | Hilo Active 22g Berry Fitshake (1 sachet) | 130 | 22g | 2.5g | 5g | Label/MyNetDiary |
-| HiLo Protein Chocofit (190ml, small pack) | 140 | 14g | 2.5g | 15g | Label (Apr 2026) |
+| HiLo Protein Chocofit (190ml, small pack) | 140 | 14g | 2.5g | 15g | Label  |
 | L-Men Isopower Creatine (1 sachet/7.8g) | 25 | 0g | 0g | 5g | FatSecret; creatine + Vit B supplement, NOT a protein shake |
 | Collagena Susu Steril (189ml can) | 130 | 8g | 6g | 11g | FatSecret |
 | Good Day Coffee Freeze (sachet 30g) | 130 | 1g | 3.5g | 25g | FatSecret |
@@ -528,7 +533,7 @@ PY
 The user has a yo-yo consistency pattern - strong starts (~2 months of 5x/week gym), then drops off entirely (gym + tracking), regaining 3-4kg per gap:
 - Started 85.6kg → lost 6kg in 2 months → slacked months 3-5 → regained 3kg
 - Restarted Dec → 79kg after 2 months → stopped Ramadan (Mar) → 82kg
-- Now 83kg restarting (Apr 2026)
+- Now 83kg restarting 
 
 **Key insight: the user stops BOTH gym and calorie tracking during gaps.** Calorie tracking is more important than gym for weight maintenance. When the user stops going to the gym, they should NEVER stop logging food - that's what causes the regain.
 
@@ -660,7 +665,7 @@ When the user asks what the dashboard will look like once there is enough data, 
 
 **Productivity DB hard crash (Jun 2026):** `dashboard_v1.py` line 346 does `ATTACH DATABASE` to `~/.hermes/skills/productivity-tracker/data/productivity.db` with no try/except. If the file doesn't exist (fresh deploy, or skill split before productivity-tracking was set up), the pipeline crashes at step 3 even though ETL + materialize succeeded. **Fix:** create the stub DB as documented in the Setup section above. Do NOT skip this on fresh deploys.
 
-**Historical CSV/XLSX weight imports (Apr 2026):** Telegram/Hermes attachment ingestion rejects raw `.csv` with "Unsupported document type '.csv'"; ask the user to upload `.xlsx`, `.zip`, rename CSV to `.txt`, or paste the CSV. For MovingLife/smart-scale `.xlsx` exports, use `scripts/import_weight_xlsx.py` and dry-run first. MovingLife may store some dates as Excel serial numbers that parse as impossible future dates because month/day are effectively swapped; `import_weight_xlsx.py` normalizes these (e.g. serial for 2026-08-04 becomes 2026-04-08) and has regression coverage. After importing historical check-ins, run `scripts/run_pipeline.py` and verify:
+**Historical CSV/XLSX weight imports :** Telegram/Hermes attachment ingestion rejects raw `.csv` with "Unsupported document type '.csv'"; ask the user to upload `.xlsx`, `.zip`, rename CSV to `.txt`, or paste the CSV. For MovingLife/smart-scale `.xlsx` exports, use `scripts/import_weight_xlsx.py` and dry-run first. MovingLife may store some dates as Excel serial numbers that parse as impossible future dates because month/day are effectively swapped; `import_weight_xlsx.py` normalizes these (e.g. serial for 2026-08-04 becomes 2026-04-08) and has regression coverage. After importing historical check-ins, run `scripts/run_pipeline.py` and verify:
 ```sql
 SELECT COUNT(*), MIN(checkin_date), MAX(checkin_date) FROM weekly_checkins;
 SELECT week_start, weekly_weight_kg, weekly_weight_change_kg FROM weekly_summary WHERE weekly_weight_kg IS NOT NULL ORDER BY week_start DESC LIMIT 8;
@@ -699,4 +704,4 @@ python3 scripts/run_pipeline.py
 ```
 `etl_sync.py` has been patched so the upsert sets `gym_flag=1` whenever `COALESCE(excluded.workout_kcal, daily_facts.workout_kcal, 0) > 0`.
 
-**Also verify `daily_nutrition.json`** - if a workout exists in JSON but not in `daily_facts`, the `gym_flag` won't be set. The user had this exact issue on 2026-04-21: Lyfta data was in the DB but `gym_flag` was 0, causing the dashboard to show 2 workouts instead of 3.
+**Also verify `daily_nutrition.json`** - if a workout exists in JSON but not in `daily_facts`, the `gym_flag` won't be set. Lyfta data can be in the DB but `gym_flag` was 0, causing the dashboard to show 2 workouts instead of 3.
