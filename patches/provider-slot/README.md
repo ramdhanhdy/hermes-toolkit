@@ -1,23 +1,23 @@
 # Provider-Slot Concurrency Limiter
 
-A cross-process concurrency limiter for Hermes Agent provider calls. Uses POSIX file locks (`fcntl.flock`) to enforce a hard concurrency cap across independent Python subprocesses — no Redis, no database, no external dependencies.
+A cross-process concurrency limiter for Hermes Agent provider calls. Uses POSIX file locks (`fcntl.flock`) to enforce a hard concurrency cap across independent Python subprocesses - no Redis, no database, no external dependencies.
 
 ## The Problem
 
-Some LLM providers (e.g. `api.code.umans.ai`) offer unlimited tokens but cap concurrent requests (e.g. 4 simultaneous). Hermes runs multiple agents, subagents, auxiliary calls (compression, vision, title generation), and MoA reference models — all hitting the same provider. Without limiting, the system exceeds the cap and gets rate-limited.
+Some LLM providers (e.g. `api.code.umans.ai`) offer unlimited tokens but cap concurrent requests (e.g. 4 simultaneous). Hermes runs multiple agents, subagents, auxiliary calls (compression, vision, title generation), and MoA reference models - all hitting the same provider. Without limiting, the system exceeds the cap and gets rate-limited.
 
 ## How It Works
 
 Three layers:
 
 ### 1. sitecustomize.py (Bootstrap)
-Python auto-imports `sitecustomize.py` on startup. This file installs an import hook that patches Hermes' chat and auxiliary modules the moment they're loaded — before any HTTP request can fire.
+Python auto-imports `sitecustomize.py` on startup. This file installs an import hook that patches Hermes' chat and auxiliary modules the moment they're loaded - before any HTTP request can fire.
 
 ### 2. provider_slot_patch.py (Monkey-Patch)
 Wraps three call sites:
-- `interruptible_streaming_api_call` — main agent streaming calls
-- `call_llm` — synchronous auxiliary calls (compression, title generation)
-- `async_call_llm` — async auxiliary calls (vision, session search)
+- `interruptible_streaming_api_call` - main agent streaming calls
+- `call_llm` - synchronous auxiliary calls (compression, title generation)
+- `async_call_llm` - async auxiliary calls (vision, session search)
 
 **Provider scoping:** Only calls matching `HERMES_PROVIDER_LIMITED_PROVIDERS` / `HERMES_PROVIDER_LIMITED_MODELS` / `HERMES_PROVIDER_LIMITED_BASE_URLS` are capped. Other providers pass through uncapped.
 
@@ -27,10 +27,10 @@ Wraps three call sites:
 Creates N lock files in a temp directory. Before each HTTP request, acquires one via `fcntl.flock(LOCK_EX | LOCK_NB)`. If all slots are held, polls until one frees. After the request completes, releases the lock.
 
 Key properties:
-- **Auto-release on crash** — kernel closes file descriptors on process death, releasing locks
-- **Cross-process** — fcntl locks work across independent subprocesses (unlike threading.Lock)
-- **Zero dependencies** — stdlib only (fcntl, os, time, uuid, logging)
-- **Per-call granularity** — each slot wraps exactly ONE HTTP request, not a retry loop
+- **Auto-release on crash** - kernel closes file descriptors on process death, releasing locks
+- **Cross-process** - fcntl locks work across independent subprocesses (unlike threading.Lock)
+- **Zero dependencies** - stdlib only (fcntl, os, time, uuid, logging)
+- **Per-call granularity** - each slot wraps exactly ONE HTTP request, not a retry loop
 
 ## Installation
 

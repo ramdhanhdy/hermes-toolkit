@@ -10,8 +10,8 @@ DISCOVER → FILTER → GO DEEP → BRIEF → DELIVER
 
 ### Two Layers
 
-1. **Source adapters** (standalone, no Hermes required) — fetch and normalize signals from APIs
-2. **Kanban orchestrator** (requires Hermes) — spawns researcher/judge/synthesizer agents via kanban boards
+1. **Source adapters** (standalone, no Hermes required) - fetch and normalize signals from APIs
+2. **Kanban orchestrator** (requires Hermes) - spawns researcher/judge/synthesizer agents via kanban boards
 
 ## Source Adapters
 

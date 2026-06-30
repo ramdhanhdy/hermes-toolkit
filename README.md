@@ -1,6 +1,6 @@
 # Hermes Toolkit
 
-Custom tools, skills, and patches built for [Hermes Agent](https://github.com/nousresearch/hermes-agent) — an AI agent framework by Nous Research.
+Custom tools, skills, and patches built for [Hermes Agent](https://github.com/nousresearch/hermes-agent) - an AI agent framework by Nous Research.
 
 ## What's Inside
 
@@ -28,7 +28,7 @@ hermes skills install fitness-tracker
 
 ### Use Idea Funnel Standalone
 
-The source adapters work without Hermes — they're pure Python:
+The source adapters work without Hermes - they're pure Python:
 
 ```bash
 cd idea-funnel
@@ -59,8 +59,8 @@ See [patches/provider-slot/README.md](patches/provider-slot/README.md) for insta
 | `HERMES_PROVIDER_SLOT_MAX_WAIT_SEC` | `300` | provider-slot limiter |
 | `KANBAN_BOARDS` | `default` | kanban watchdog |
 | `KANBAN_MAX_RUNNING` | `2` | kanban heartbeat |
-| `LYFTA_API_KEY` | — | fitness-tracker workout sync |
-| `NOTION_API_KEY` | — | kanban gates (Notion verification) |
+| `LYFTA_API_KEY` | - | fitness-tracker workout sync |
+| `NOTION_API_KEY` | - | kanban gates (Notion verification) |
 
 ## Repository Structure
 

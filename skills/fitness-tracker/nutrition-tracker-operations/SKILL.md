@@ -40,11 +40,11 @@ Use this when the user sends meal, snack, drink, or ingredient details to log in
 
 Keep it short and numbers-first. Mention only material caveats, such as oil absorption, sauce/coating, package label uncertainty, or whether the workout-day budget is pending Lyfta sync.
 
-**Telegram formatting:** Avoid `**bold**` inside pipe-delimited table cells — Telegram renders these as literal asterisks. Use bold only in standalone text and headers. For long-form analyses, use collapsible `<details>` sections, footnotes, heading hierarchy, and task lists. Ensure `platforms.telegram.extra.rich_messages: true` is set for full markdown rendering.
+**Telegram formatting:** Avoid `**bold**` inside pipe-delimited table cells - Telegram renders these as literal asterisks. Use bold only in standalone text and headers. For long-form analyses, use collapsible `<details>` sections, footnotes, heading hierarchy, and task lists. Ensure `platforms.telegram.extra.rich_messages: true` is set for full markdown rendering.
 
 ## Pitfalls
 
-- Do not calculate only in-chat; persistence and pipeline verification are part of the task. **This is a RECURRING failure mode** — the agent calculates macros, displays the table, then forgets to call `write_file` to persist to `daily_nutrition.json`. The cron reminder jobs read the JSON file, not chat history, so they send duplicate reminders for meals already discussed. ALWAYS write to JSON before reporting.
+- Do not calculate only in-chat; persistence and pipeline verification are part of the task. **This is a RECURRING failure mode** - the agent calculates macros, displays the table, then forgets to call `write_file` to persist to `daily_nutrition.json`. The cron reminder jobs read the JSON file, not chat history, so they send duplicate reminders for meals already discussed. ALWAYS write to JSON before reporting.
 - Do not omit macros. The user expects full daily macro breakdown whenever logging any meal.
 - Do not ask for information already inferable from grams and common food names; use live lookup and clear proxies.
 - Do not treat copied profile data files as the active tracker by default.

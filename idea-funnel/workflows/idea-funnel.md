@@ -2,7 +2,7 @@
 
 ## Summary
 
-An autonomous multi-agent system that continuously discovers, filters, and researches build-worthy ideas for a developer seeking to ship something that gets them hired at an AI company. Every 3 days, delivers 1-3 well-researched idea briefs to Telegram. The user makes the final build/pass decision — the system does not build.
+An autonomous multi-agent system that continuously discovers, filters, and researches build-worthy ideas for a developer seeking to ship something that gets them hired at an AI company. Every 3 days, delivers 1-3 well-researched idea briefs to Telegram. The user makes the final build/pass decision - the system does not build.
 
 ## The Loop
 
@@ -12,32 +12,32 @@ Every 3 days, the system runs a 4-stage pipeline:
 DISCOVER → FILTER → GO DEEP → BRIEF → DELIVER
 ```
 
-1. **Discover** — scan sources for emerging ideas, tools, and problems in the AI/agent space
-2. **Filter** — score ideas against criteria, drop noise, keep top candidates
-3. **Go Deep** — research the surviving ideas: landscape, competitors, evidence, build path
-4. **Brief** — write a structured brief for each surviving idea
-5. **Deliver** — send briefs to Telegram as a DOCX
+1. **Discover** - scan sources for emerging ideas, tools, and problems in the AI/agent space
+2. **Filter** - score ideas against criteria, drop noise, keep top candidates
+3. **Go Deep** - research the surviving ideas: landscape, competitors, evidence, build path
+4. **Brief** - write a structured brief for each surviving idea
+5. **Deliver** - send briefs to Telegram as a DOCX
 
 ## Sources
 
 The discovery agents scan these sources:
 
-- **GitHub trending** — repos and topics in AI, agents, LLMs, Python
-- **Hacker News** — threads about AI tools, agents, startups
-- **Reddit** — r/LocalLLaMA, r/MachineLearning, r/artificial
-- **ArXiv** — papers on multi-agent systems, LLM applications, tool use
+- **GitHub trending** - repos and topics in AI, agents, LLMs, Python
+- **Hacker News** - threads about AI tools, agents, startups
+- **Reddit** - r/LocalLLaMA, r/MachineLearning, r/artificial
+- **ArXiv** - papers on multi-agent systems, LLM applications, tool use
 
-Own friction points are **excluded** — the funnel stays wide open to external ideas.
+Own friction points are **excluded** - the funnel stays wide open to external ideas.
 
 ## Filter Criteria
 
 An idea survives filtering if it meets **all** of these:
 
-- **Timely** — emerging right now, not a played-out trend
-- **Python-buildable** — primary coding skill is Python; TypeScript-only ideas are dropped
-- **Visible** — something an AI company would notice if shipped
-- **Real problem** — not a solution looking for a problem
-- **Not already solved** — if a dominant tool exists and the space is saturated, skip it
+- **Timely** - emerging right now, not a played-out trend
+- **Python-buildable** - primary coding skill is Python; TypeScript-only ideas are dropped
+- **Visible** - something an AI company would notice if shipped
+- **Real problem** - not a solution looking for a problem
+- **Not already solved** - if a dominant tool exists and the space is saturated, skip it
 
 ## Output: The Brief
 
@@ -69,7 +69,7 @@ How shipping this gets noticed. Which companies would care and why.
 - **Format**: DOCX file, one document containing 1-3 briefs
 - **Destination**: Telegram (the user's chat)
 - **Cadence**: Every 2 days
-- **Accompanied by**: A short summary message — "3 ideas this cycle: [one-liner each]"
+- **Accompanied by**: A short summary message - "3 ideas this cycle: [one-liner each]"
 
 ## What The System Does NOT Do
 

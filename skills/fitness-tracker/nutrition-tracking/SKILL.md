@@ -51,13 +51,13 @@ Use these as fallbacks when no better label/recipe data is available:
 
 ## Output style
 
-Keep it short and grounded. The user wants the numbers, budget, and important caveats — not a long source essay.
+Keep it short and grounded. The user wants the numbers, budget, and important caveats - not a long source essay.
 
-**Telegram formatting:** Avoid `**bold**` inside pipe-delimited table cells — Telegram renders these as literal asterisks. Use bold only in standalone text and headers. For long-form analyses (workout evaluations, multi-week reports), use collapsible `<details>` sections, footnotes, heading hierarchy, and task lists. Ensure `platforms.telegram.extra.rich_messages: true` is set in config for full markdown rendering (32,768 char limit via Bot API 10.1 `sendRichMessage`).
+**Telegram formatting:** Avoid `**bold**` inside pipe-delimited table cells - Telegram renders these as literal asterisks. Use bold only in standalone text and headers. For long-form analyses (workout evaluations, multi-week reports), use collapsible `<details>` sections, footnotes, heading hierarchy, and task lists. Ensure `platforms.telegram.extra.rich_messages: true` is set in config for full markdown rendering (32,768 char limit via Bot API 10.1 `sendRichMessage`).
 
 ## Pitfalls
 
-- **CRITICAL: Meals logged in chat MUST be persisted to `data/daily_nutrition.json` immediately.** Displaying the macro table is not enough — cron reminder jobs read the JSON file, not chat history. If you log in chat but don't write to file, the cron sends duplicate reminders. This is a RECURRING failure mode (Apr 2026, Jun 2026). ALWAYS write to JSON before reporting.
+- **CRITICAL: Meals logged in chat MUST be persisted to `data/daily_nutrition.json` immediately.** Displaying the macro table is not enough - cron reminder jobs read the JSON file, not chat history. If you log in chat but don't write to file, the cron sends duplicate reminders. This is a RECURRING failure mode (Apr 2026, Jun 2026). ALWAYS write to JSON before reporting.
 - Do not skip persistence/pipeline verification; nutrition logging is not just calculating macros in chat.
 - Do not omit daily macro totals. The user explicitly wants the full daily macro breakdown whenever a meal is logged.
 - Do not assume rest day if workout evidence exists; sync/check Lyfta when the message implies training or when budget status depends on it.

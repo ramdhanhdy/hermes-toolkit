@@ -1,15 +1,15 @@
 # Fitness Tracker Skill
 
-A Hermes skill for personal fitness tracking — calorie budgeting, macro tracking, workout detection, and weight monitoring. Designed for daily use via Telegram.
+A Hermes skill for personal fitness tracking - calorie budgeting, macro tracking, workout detection, and weight monitoring. Designed for daily use via Telegram.
 
 ## Features
 
-- **Meal logging** — log meals with automatic macro lookup (USDA / FatSecret data)
-- **Workout detection** — syncs with Lyfta gym app, estimates calories burned using MET × duration
-- **Calorie budgeting** — daily targets based on BMR (Mifflin-St Jeor), activity level, and deficit goal
-- **Weight tracking** — daily weigh-ins with noise filtering (see [fitness-scale-and-nutrition-coaching](fitness-scale-and-nutrition-coaching/SKILL.md))
-- **Daily dashboard** — macro breakdown table (P/F/C grams + kcal vs remaining budget)
-- **Fatigue monitoring** — tracks training load and warns on overreaching
+- **Meal logging** - log meals with automatic macro lookup (USDA / FatSecret data)
+- **Workout detection** - syncs with Lyfta gym app, estimates calories burned using MET × duration
+- **Calorie budgeting** - daily targets based on BMR (Mifflin-St Jeor), activity level, and deficit goal
+- **Weight tracking** - daily weigh-ins with noise filtering (see [fitness-scale-and-nutrition-coaching](fitness-scale-and-nutrition-coaching/SKILL.md))
+- **Daily dashboard** - macro breakdown table (P/F/C grams + kcal vs remaining budget)
+- **Fatigue monitoring** - tracks training load and warns on overreaching
 
 ## Installation
 
@@ -43,10 +43,10 @@ hermes skills install fitness-tracker
 
 ## Sub-Skills
 
-- [nutrition-logging](nutrition-logging/SKILL.md) — Meal and drink logging
-- [nutrition-tracking](nutrition-tracking/SKILL.md) — Live nutrition data lookup
-- [nutrition-tracker-operations](nutrition-tracker-operations/SKILL.md) — Tracker operations
-- [fitness-scale-and-nutrition-coaching](fitness-scale-and-nutrition-coaching/SKILL.md) — Weight interpretation + coaching
+- [nutrition-logging](nutrition-logging/SKILL.md) - Meal and drink logging
+- [nutrition-tracking](nutrition-tracking/SKILL.md) - Live nutrition data lookup
+- [nutrition-tracker-operations](nutrition-tracker-operations/SKILL.md) - Tracker operations
+- [fitness-scale-and-nutrition-coaching](fitness-scale-and-nutrition-coaching/SKILL.md) - Weight interpretation + coaching
 
 ## Dependencies
 

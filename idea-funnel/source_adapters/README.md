@@ -47,11 +47,11 @@ Safety detail: prepare-only boards create tasks unassigned. Hermes may recompute
 
 ## Adapters
 
-- `github` — GitHub Search API for AI-agent/tool/MCP repos
-- `hackernews` — HN Algolia API for AI-agent/tool/MCP discussions
-- `reddit` — Reddit RSS feeds with proper UA; degrades instead of blocking the run
-- `arxiv` — ArXiv Atom API for agents/tools/memory/MCP/context-compaction
-- `huggingface` — trending models, spaces, and Hugging Face Daily Papers
+- `github` - GitHub Search API for AI-agent/tool/MCP repos
+- `hackernews` - HN Algolia API for AI-agent/tool/MCP discussions
+- `reddit` - Reddit RSS feeds with proper UA; degrades instead of blocking the run
+- `arxiv` - ArXiv Atom API for agents/tools/memory/MCP/context-compaction
+- `huggingface` - trending models, spaces, and Hugging Face Daily Papers
 
 Note: Papers With Code is now surfaced through Hugging Face Daily Papers. Do not maintain a separate Papers With Code adapter unless HF changes the product again.
 
