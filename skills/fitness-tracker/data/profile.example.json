@@ -1,0 +1,13 @@
+{
+  "name": "Your Name",
+  "age": 30,
+  "sex": "male",
+  "height_cm": 170,
+  "weight_kg": 70,
+  "activity_level": "moderate",
+  "goal": "maintenance",
+  "bmr_formula": "mifflin-st-jeor",
+  "weekly_deficit_target_kcal": 0,
+  "gym_days_per_week": 3,
+  "rest_day": "sunday"
+}

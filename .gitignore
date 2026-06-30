@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Runtime data (never commit)
+*.db
+*.db-shm
+*.db-wal
+.env
+*.lock
+
+# Idea funnel run outputs
+idea-funnel/runs/
+idea-funnel/raw/
+
+# Personal data
+skills/fitness-tracker/data/*.json
+!skills/fitness-tracker/data/profile.example.json
+skills/fitness-tracker/data/*.db
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
